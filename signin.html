@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Venus">
+  <title>Login</title>
+  <link rel="shortcut icon" type="image/jpg" href="Favicon_Image_Location" />
+
+
+  <!-- Custom styles for this template -->
+  <link href="signin.css" rel="stylesheet">
+
+  <!-- Bootstrap core CSS -->
+  <link href="assets/dist/css/bootstrap.css" rel="stylesheet">
+
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+</head>
+
+<body class="text-center">
+
+  <script>
+    let token = localStorage.getItem("token") || "";
+    if (token != "") {
+      document.location.href = './index.html';
+    }
+  </script>
+
+
+  <form class="form-signin">
+    <div class="alert alert-danger" id="err-msg" role="alert">
+
+    </div>
+
+    <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
+
+    <label for="inputEmail" class="username-error">Email :</label>
+    <input type="email" id="inputEmail" class="form-control" placeholder="Email address">
+    <!-- <p class="username-error">required</p> -->
+
+    <label for="inputPassword">Password :</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password">
+    <!-- <p class="email-error">required</p> -->
+
+    <button class="btn btn-lg btn-primary btn-block" type="button" onclick="login()">Login</button>
+  </form>
+
+
+
+  <!-- JQuery CDN-->
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+
+  <script>
+    function login() {
+      var formData = new FormData();
+      formData.append("email", document.getElementById("inputEmail").value)
+      formData.append("password", document.getElementById("inputPassword").value)
+
+      axios
+        .post("https://demo.ali-chv.com/api/login", formData, {
+          crossDomain: true,
+          headers: {
+
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+        })
+        .then((response) => {
+          if (response.data.status == 200) {
+            localStorage.setItem("token", response.data.data.token);
+            document.location.href = './index.html';
+          }
+
+          else {
+            $("#err-msg").show();
+            $("#err-msg").text(response.data.data);
+          }
+
+        })
+        .catch((err) => {
+          $("#err-msg").show();
+          $("#err-msg").text(err.response.data.message);
+        });
+
+    }
+  </script>
+
+
+</body>
+
+</html>
